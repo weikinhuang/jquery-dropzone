@@ -1,6 +1,7 @@
-/*
+/*!
  * HTML5 file drag and drop ajax upload jQuery wrapper - jQuery plugin 0.5.0
- * Copyright (c) 2010 Wei Kin Huang
+ *
+ * Copyright (c) 2010 Wei Kin Huang (<a href="http://www.incrementbyone.com">Increment By One</a>)
  *
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
