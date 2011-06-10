@@ -291,9 +291,13 @@
 					});
 					return;
 				}
-				if (this._trigger("queue", e, {
-					file : file
-				}) === false) {
+
+				try {
+					// TODO: figure out why firefox4 returns false from prevent default
+					this._trigger("queue", e, {
+						file : file
+					});
+				} catch (ev) {
 					return false;
 				}
 				this.file_queue.push(file);
@@ -428,9 +432,11 @@
 				this._trigger("dragLeave", e, {});
 				this._trigger("docLeave", e, {});
 
-				// only queue if the drop function says it's ok
-				if (this._trigger("drop", e, {}) !== false) {
+				// only queue if the drop function says it's ok, we need to throw because sometimes events are prevented
+				try {
+					this._trigger("drop", e, {});
 					this.queue(e);
+				} catch (ex) {
 				}
 			}
 			this.element.removeClass("ui-state-hover");
