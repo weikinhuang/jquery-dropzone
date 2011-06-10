@@ -243,11 +243,11 @@
 			var self = this;
 			this.has_started = false;
 			try {
-				if ($.httpSuccess(xhr)) {
+				if ($.ui.dropzone.httpSuccess(xhr)) {
 					try {
 						// continue the upload if success is ok
 						if (this._trigger("success", null, {
-							value : $.httpData(xhr, this.options.dataType),
+							value : $.ui.dropzone.httpData(xhr, this.options.dataType),
 							xhr : xhr,
 							file : file
 						}) !== false) {
@@ -497,6 +497,43 @@
 			DEQUEUE : "RemovedFromQueue",
 			NOT_READABLE : "FileNotReadable",
 			MISSING : "FileMissing"
+		},
+		httpSuccess : function(xhr) {
+			// from jquery 1.4.4
+			try {
+				// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
+				return !xhr.status && location.protocol === "file:" || xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 1223;
+			} catch (e) {
+			}
+			return false;
+		},
+		httpData : function(xhr, type, s) {
+			// from jquery 1.4.4
+			var ct = xhr.getResponseHeader("content-type") || "", xml = type === "xml" || !type && ct.indexOf("xml") >= 0, data = xml ? xhr.responseXML : xhr.responseText;
+
+			if (xml && data.documentElement.nodeName === "parsererror") {
+				jQuery.error("parsererror");
+			}
+
+			// Allow a pre-filtering function to sanitize the response
+			// s is checked to keep backwards compatibility
+			if (s && s.dataFilter) {
+				data = s.dataFilter(data, type);
+			}
+
+			// The filter can actually parse the response
+			if (typeof data === "string") {
+				// Get the JavaScript object, if JSON is used.
+				if (type === "json" || !type && ct.indexOf("json") >= 0) {
+					data = jQuery.parseJSON(data);
+
+					// If the type is "script", eval it in global context
+				} else if (type === "script" || !type && ct.indexOf("javascript") >= 0) {
+					jQuery.globalEval(data);
+				}
+			}
+
+			return data;
 		}
 	});
 
