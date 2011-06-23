@@ -613,6 +613,7 @@
 				if (this._trigger("drop", e, {}) !== false) {
 					this.queue(e);
 				}
+				this.element.removeClass("ui-state-hover");
 			}
 		},
 		_dragEnter : function(e) {
@@ -624,6 +625,7 @@
 		_dragOver : function(e) {
 			if (!this.options.disabled) {
 				this._trigger("dragOver", e, {});
+				this.element.addClass("ui-state-hover");
 			}
 		},
 		_dragLeave : function(e) {
