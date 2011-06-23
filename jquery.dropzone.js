@@ -63,7 +63,7 @@
 				this.element[0].addEventListener("drop", events.element.drop, true);
 				this.element.bind("dragenter." + this.widgetEventPrefix, events.element.dragenter).bind("dragover." + this.widgetEventPrefix, events.element.dragover).bind("dragleave." + this.widgetEventPrefix, events.element.dragleave);
 				// bind the drag/drop event handler to the document
-				document.addEventListener("drop", events.document.drop, true);
+				document.addEventListener("drop", events.document.drop, false);
 				doc.bind("dragenter." + this.widgetEventPrefix, events.document.dragenter).bind("dragover." + this.widgetEventPrefix, events.document.dragover).bind("dragleave." + this.widgetEventPrefix, events.document.dragleave);
 
 				// add the jquery ui classes
@@ -94,7 +94,7 @@
 				this.element[0].removeEventListener("drop", events.element.drop, true);
 				this.element.unbind("dragenter." + this.widgetEventPrefix, events.element.dragenter).unbind("dragover." + this.widgetEventPrefix, events.element.dragover).unbind("dragleave." + this.widgetEventPrefix, events.element.dragleave);
 				// unbind the drag/drop event handler to the document
-				document.removeEventListener("drop", events.document.drop, true);
+				document.removeEventListener("drop", events.document.drop, false);
 				doc.unbind("dragenter." + this.widgetEventPrefix, events.document.dragenter).unbind("dragover." + this.widgetEventPrefix, events.document.dragover).unbind("dragleave." + this.widgetEventPrefix, events.document.dragleave);
 
 				// remove the jquery ui classes
@@ -380,6 +380,7 @@
 					drop : function(e) {
 						self._drop(e);
 						e.preventDefault();
+						e.stopPropagation();
 						return false;
 					},
 					dragenter : function(e) {
@@ -401,8 +402,7 @@
 				this.events.document = {
 					drop : function(e) {
 						self._docLeave(e);
-						// TODO: somehow prevent this!
-						// e.preventDefault();
+						e.preventDefault();
 						return false;
 					},
 					dragenter : function(e) {
@@ -587,6 +587,7 @@
 					drop : function(e) {
 						self._drop(e);
 						e.preventDefault();
+						e.stopPropagation();
 						return false;
 					},
 					dragenter : function(e) {
