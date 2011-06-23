@@ -8,7 +8,8 @@
  * http://www.gnu.org/licenses/gpl.html
  */
 (function($, document, undefined) {
-	var doc = $(document), has_support = !!(window.FileReader || window.FormData), has_large_file_support = !!window.FormData, empty = function() {
+	var doc = $(document), has_support = !!(window.FileReader || window.FormData), has_large_file_support = !!window.FormData, empty = function(event, ui) {
+		event.stopPropagation();
 	}, buildForm = function(param, filename, filedata, boundary) {
 		// Build RFC2388 string.
 		return [ "--" + boundary, 'Content-Disposition: form-data; name="' + param + '"; filename="' + filename + '"', "Content-Type: application/octet-stream\r\n", filedata, "--" + boundary ].join("\r\n");
@@ -292,12 +293,9 @@
 					return;
 				}
 
-				try {
-					// TODO: figure out why firefox4 returns false from prevent default
-					this._trigger("queue", e, {
-						file : file
-					});
-				} catch (ev) {
+				if (this._trigger("queue", e, {
+					file : file
+				}) === false) {
 					return false;
 				}
 				this.file_queue.push(file);
@@ -403,7 +401,8 @@
 				this.events.document = {
 					drop : function(e) {
 						self._docLeave(e);
-						e.preventDefault();
+						// TODO: somehow prevent this!
+						// e.preventDefault();
 						return false;
 					},
 					dragenter : function(e) {
@@ -432,11 +431,9 @@
 				this._trigger("dragLeave", e, {});
 				this._trigger("docLeave", e, {});
 
-				// only queue if the drop function says it's ok, we need to throw because sometimes events are prevented
-				try {
-					this._trigger("drop", e, {});
+				// only queue if the drop function says it's ok
+				if (this._trigger("drop", e, {}) !== false) {
 					this.queue(e);
-				} catch (ex) {
 				}
 			}
 			this.element.removeClass("ui-state-hover");
