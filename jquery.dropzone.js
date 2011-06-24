@@ -1,5 +1,5 @@
 /*!
- * HTML5 file drag and drop ajax upload jQuery wrapper - jQuery plugin 0.5.0
+ * HTML5 file drag and drop ajax upload jQuery wrapper - jQuery plugin 0.6.0
  *
  * Copyright (c) 2010 Wei Kin Huang (<a href="http://www.incrementbyone.com">Increment By One</a>)
  *
@@ -60,11 +60,15 @@
 			if (has_support) {
 				var events = this._getEvents();
 				// bind the drag/drop event handler to the element
-				this.element[0].addEventListener("drop", events.element.drop, true);
-				this.element.bind("dragenter." + this.widgetEventPrefix, events.element.dragenter).bind("dragover." + this.widgetEventPrefix, events.element.dragover).bind("dragleave." + this.widgetEventPrefix, events.element.dragleave);
+				this.element.bind("dragenter." + this.widgetEventPrefix, events.element.dragenter)
+					.bind("dragover." + this.widgetEventPrefix, events.element.dragover)
+					.bind("dragleave." + this.widgetEventPrefix, events.element.dragleave)
+					.bind("drop." + this.widgetEventPrefix, events.element.drop);
 				// bind the drag/drop event handler to the document
-				document.addEventListener("drop", events.document.drop, false);
-				doc.bind("dragenter." + this.widgetEventPrefix, events.document.dragenter).bind("dragover." + this.widgetEventPrefix, events.document.dragover).bind("dragleave." + this.widgetEventPrefix, events.document.dragleave);
+				doc.bind("dragenter." + this.widgetEventPrefix, events.document.dragenter)
+					.bind("dragover." + this.widgetEventPrefix, events.document.dragover)
+					.bind("dragleave." + this.widgetEventPrefix, events.document.dragleave)
+					.bind("drop." + this.widgetEventPrefix, events.document.drop);
 
 				// add the jquery ui classes
 				this.element.addClass("ui-dropzone ui-widget ui-widget-content ui-corner-all ui-state-default").attr({
@@ -91,11 +95,15 @@
 			if (has_support) {
 				var events = this._getEvents();
 				// unbind the drag/drop event handler to the element
-				this.element[0].removeEventListener("drop", events.element.drop, true);
-				this.element.unbind("dragenter." + this.widgetEventPrefix, events.element.dragenter).unbind("dragover." + this.widgetEventPrefix, events.element.dragover).unbind("dragleave." + this.widgetEventPrefix, events.element.dragleave);
+				this.element.unbind("dragenter." + this.widgetEventPrefix, events.element.dragenter)
+					.unbind("dragover." + this.widgetEventPrefix, events.element.dragover)
+					.unbind("dragleave." + this.widgetEventPrefix, events.element.dragleave)
+					.unbind("drop." + this.widgetEventPrefix, events.element.drop);
 				// unbind the drag/drop event handler to the document
-				document.removeEventListener("drop", events.document.drop, false);
-				doc.unbind("dragenter." + this.widgetEventPrefix, events.document.dragenter).unbind("dragover." + this.widgetEventPrefix, events.document.dragover).unbind("dragleave." + this.widgetEventPrefix, events.document.dragleave);
+				doc.unbind("dragenter." + this.widgetEventPrefix, events.document.dragenter)
+					.unbind("dragover." + this.widgetEventPrefix, events.document.dragover)
+					.unbind("dragleave." + this.widgetEventPrefix, events.document.dragleave)
+					.unbind("drop." + this.widgetEventPrefix, events.document.drop);
 
 				// remove the jquery ui classes
 				this.element.removeClass("ui-dropzone ui-widget ui-widget-content ui-corner-all ui-state-default ui-state-hover ui-state-active").removeAttr("role");
@@ -136,13 +144,13 @@
 		queue : function(e, data) {
 			var self = this, files;
 			// no files passed in...
-			if (!e.dataTransfer.files) {
+			if (e.originalEvent && (!e.originalEvent.dataTransfer || !e.originalEvent.dataTransfer.files)) {
 				this._trigger("error", null, {
 					error : $.ui.dropzone.errors.NO_SUPPORT
 				});
 				return;
 			}
-			files = e.dataTransfer.files;
+			files = e.originalEvent.dataTransfer.files;
 			// too many files!
 			if (files.length + this.file_queue.length > this.options.maxFiles) {
 				this._trigger("error", null, {
@@ -552,8 +560,10 @@
 			if (has_support) {
 				var events = this._getEvents();
 				// bind the drag/drop event handler to the element
-				this.element[0].addEventListener("drop", events.drop, true);
-				this.element.bind("dragenter." + this.widgetEventPrefix, events.dragenter).bind("dragover." + this.widgetEventPrefix, events.dragover).bind("dragleave." + this.widgetEventPrefix, events.dragleave);
+				this.element.bind("dragenter." + this.widgetEventPrefix, events.dragenter)
+					.bind("dragover." + this.widgetEventPrefix, events.dragover)
+					.bind("dragleave." + this.widgetEventPrefix, events.dragleave)
+					.bind("drop." + this.widgetEventPrefix, events.drop);
 
 				// add the jquery ui classes
 				this.element.addClass("ui-dropqueue ui-state-default").attr({
